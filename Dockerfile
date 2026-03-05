@@ -1,13 +1,13 @@
-FROM python:3.12
+FROM python:3.12-slim
 
-RUN apt-get update
-RUN apt-get install -y vim less man-db wget telnet curl net-tools iputils-ping htop dnsutils strace libffi-dev
+RUN apt-get update && apt-get install -y --no-install-recommends curl libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY . .
+RUN pip install --no-cache-dir fastapi "uvicorn[standard]" sqlalchemy alembic httpx pydantic redis celery boto3 Pillow
 
-RUN pip install fastapi uvicorn[standard] sqlalchemy alembic httpx pydantic redis celery boto3 Pillow
+COPY . .
 
 EXPOSE 8000
 
